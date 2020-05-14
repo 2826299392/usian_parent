@@ -1,0 +1,9 @@
+server:
+  port: 8091  #端口号
+spring:
+  application:
+    name: usain-item-web  #向注册中心注册的名称
+eureka:
+  client:
+    service-url:
+      defalutZone: http://localhost:8761/eureka/  #注册中心的地址

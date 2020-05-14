@@ -1,0 +1,17 @@
+server:
+  port: 8090 #端口号
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  #注册中心地址
+spring:
+  application:
+    name: usian-item-service  #向注册中心注册的名称
+    #连接数据库
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/usian?characterEncoding=UTF-8
+    username: root
+    password: 1234
+    type: com.alibaba.druid.pool.DruidDataSource
+

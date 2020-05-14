@@ -1,0 +1,6 @@
+server:
+  port: 8761 #端口
+eureka:
+  client:
+    register-with-eureka: false  #自身就是注册中心设置不注册自己
+    fetch-registry: false   #获取注册中心的服务信息
