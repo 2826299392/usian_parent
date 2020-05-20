@@ -5,9 +5,12 @@ import com.usian.pojo.TbItem;
 import com.usian.utils.PageResult;
 import com.usian.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/backend/item")
@@ -37,5 +40,36 @@ public class ItemController {
             return Result.ok(pageResult);
         }
         return Result.error("查无结果");
+    }
+
+    //添加商品信息，参数1为商品基本信息。参数二商品描述信息，参数三，商品规格信息，三张表
+    @RequestMapping("/insertTbItem")
+    public Result insertTbItem(TbItem tbItem,String desc,String itemParams){
+        Integer Num = itemServiceFeignClient.insertTbItem(tbItem,desc,itemParams);
+        if(Num==3){
+            return Result.ok();
+        }
+     return Result.error("添加错误");
+    }
+
+    //删除商品
+    @RequestMapping("/deleteItemById")
+    public Result deleteItemById(Long itemId){
+        Integer integer = itemServiceFeignClient.deleteItemById(itemId);
+        if(integer!=null){
+            return Result.ok();
+        }
+        return Result.error("删除错误");
+    }
+
+    //查询更新商品的信息
+    @RequestMapping("/preUpdateItem")
+    public Result preUpdateItem(Long itemId){
+        Map<String,Object> map = itemServiceFeignClient.preUpdateItem(itemId);
+
+        if(map!=null){
+            return Result.ok(map);
+        }
+        return Result.error("查询失败");
     }
 }

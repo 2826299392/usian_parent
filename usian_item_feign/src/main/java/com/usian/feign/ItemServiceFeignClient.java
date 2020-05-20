@@ -7,10 +7,12 @@ import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient("usian-item-service")
 public interface ItemServiceFeignClient {
@@ -24,10 +26,34 @@ public interface ItemServiceFeignClient {
     public PageResult selectTbItemAllByPage(@RequestParam Integer page,@RequestParam Integer rows);
 
     //查询类目信息，类别信息
-    @RequestMapping("/backend/itemCategory/selectItemCategoryByParentId")
+    @RequestMapping("/service/itemCategory/selectItemCategoryByParentId")
     List<TbItemCat> selectItemCategoryByParentId(@RequestParam Integer parentId);
 
     //查询商品规格参数模板信息
-    @RequestMapping("/backend/itemParam/selectItemParamByItemCatId/{itemCatId}")
+    @RequestMapping("/service/itemParam/selectItemParamByItemCatId/{itemCatId}")
     TbItemParam selectItemParamByItemCatId(@PathVariable Integer itemCatId);
+
+    //添加商品基本信息，，描述，，规格信息
+    @RequestMapping("/service/item/insertTbItem")
+    Integer insertTbItem(@RequestBody TbItem tbItem, @RequestParam String desc, @RequestParam String itemParams);
+
+    //删除
+    @RequestMapping("service/item/deleteItemById")
+    Integer deleteItemById(@RequestParam Long itemId);
+
+    //查询修改商品的信息回回显
+    @RequestMapping("/service/item/preUpdateItem")
+    Map<String,Object> preUpdateItem(@RequestParam Long itemId);
+
+    //分页查询商品规格参数信息
+    @RequestMapping("/service/itemParam/selectItemParamAll")
+    PageResult selectItemParamAll(@RequestParam Integer page, @RequestParam Integer rows);
+
+    //添加商品规格信息
+    @RequestMapping("/service/itemParam/insertItemParam")
+    Integer insertItemParam(@RequestParam Long itemCatId, @RequestParam String paramData);
+
+    //删除商品规格信息
+    @RequestMapping("/service/itemParam/deleteItemParamById")
+    Integer deleteItemParamById(@RequestParam Long id);
 }
