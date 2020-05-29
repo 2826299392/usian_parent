@@ -103,14 +103,55 @@ public class ItemServiceImp implements ItemService{
     public Map<String,Object> preUpdateItem(Long itemId) {
         Map<String,Object> map = new HashMap<String,Object>();
 
-        TbItem tbItem = tbItemMapper.selectByPrimaryKey(itemId);
-        TbItemDesc itemDesc = tbItemDescMapper.selectByPrimaryKey(itemId);
-        TbItemCat tbItemCat = tbItemCatMapper.selectByPrimaryKey(tbItem.getCid());
+        TbItem tbItem = tbItemMapper.selectByPrimaryKey(itemId);   //查询商品表的信息
+        map.put("item",tbItem);
 
-        map.put("tbItem",tbItem);
-        map.put("itemDesc",itemDesc);
-        map.put("tbItemCat",tbItemCat);
+        TbItemDesc itemDesc = tbItemDescMapper.selectByPrimaryKey(itemId);  //查询关联商品表信息的描述信息
+        map.put("itemDesc",itemDesc.getItemDesc());
 
+        TbItemCat tbItemCat = tbItemCatMapper.selectByPrimaryKey(tbItem.getCid()); //查询关联商品表信息的类目表信息
+        map.put("itemCat",tbItemCat.getName());
+
+        TbItemParamItemExample tbItemParamItemExample = new TbItemParamItemExample();
+        TbItemParamItemExample.Criteria criteria = tbItemParamItemExample.createCriteria();
+        criteria.andItemIdEqualTo(itemId);
+        List<TbItemParamItem> tbItemParamItems = tbItemParamItemMapper.selectByExampleWithBLOBs(tbItemParamItemExample);//根据商品id查询商品的规格参数信息
+        if(tbItemParamItems!=null && tbItemParamItems.size()>0){
+            TbItemParamItem tbItemParamItem = tbItemParamItems.get(0);
+            map.put("itemParamItem",tbItemParamItem.getParamData());
+        }
         return map;
+    }
+
+    @Override
+    public Integer updateTbItem(TbItem item, String desc, String itemParams) {
+        //1、商品信息添加
+        item.setUpdated(new Date());
+        item.setCreated(new Date());
+        item.setStatus((byte)1);
+        int i1 = tbItemMapper.updateByPrimaryKeySelective(item);
+
+        //2、补全desc表中空余字段，添加描述
+        TbItemDesc itemDesc = new TbItemDesc();
+        itemDesc.setItemId(item.getId());
+        itemDesc.setItemDesc(desc);
+        itemDesc.setUpdated(new Date());
+        itemDesc.setCreated(new Date());
+        int i2 = tbItemDescMapper.updateByPrimaryKeySelective(itemDesc);
+
+        //3、修改规格参数表的信息，补全空余字段
+        TbItemParamItemExample tbItemParamItemExample = new TbItemParamItemExample();
+        TbItemParamItemExample.Criteria criteria = tbItemParamItemExample.createCriteria();
+        criteria.andItemIdEqualTo(item.getId());          //修改商品规格参数有主键id根据id查到数据
+        List<TbItemParamItem> tbItemParamItems = tbItemParamItemMapper.selectByExample(tbItemParamItemExample);
+        if(tbItemParamItems.size()>0 && tbItemParamItems!=null){
+            TbItemParamItem tbItemParamItem = tbItemParamItems.get(0);   //获取根据id查到的参数对象
+            tbItemParamItem.setItemId(item.getId());
+            tbItemParamItem.setParamData(itemParams);  //补全空余字段
+            tbItemParamItem.setUpdated(new Date());
+            tbItemParamItem.setCreated(new Date());
+            tbItemParamItemMapper.updateByPrimaryKeySelective(tbItemParamItem);  //查到的参数对象有id将对象传递就信
+        }
+        return i1+i2;
     }
 }

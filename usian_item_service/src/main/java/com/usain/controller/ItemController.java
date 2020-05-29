@@ -49,4 +49,9 @@ public class ItemController {
        return itemService.preUpdateItem(itemId);
     }
 
+    //带参数修改商品信息
+    @RequestMapping("/updateTbItem")
+    public Integer updateTbItem(@RequestBody TbItem item,@RequestParam String desc,@RequestParam String itemParams){
+        return itemService.updateTbItem(item,desc,itemParams);
+    }
 }

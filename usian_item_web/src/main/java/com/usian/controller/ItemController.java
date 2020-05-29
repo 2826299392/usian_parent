@@ -72,4 +72,14 @@ public class ItemController {
         }
         return Result.error("查询失败");
     }
+
+    //修改商品信息
+    @RequestMapping("/updateTbItem")
+    public Result updateTbItem(TbItem tbItem,String desc,String itemParams){
+       Integer num = itemServiceFeignClient.updateTbItem(tbItem,desc,itemParams);
+       if(num>0){
+           return Result.ok();
+       }
+       return Result.error("修改商品信息失败");
+    }
 }

@@ -2,6 +2,7 @@ package com.usain.controller;
 
 import com.usain.service.ItemCatService;
 import com.usian.pojo.TbItemCat;
+import com.usian.utils.CatResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,5 +20,11 @@ public class ItemCatController {
     @RequestMapping("/selectItemCategoryByParentId")
     public List<TbItemCat> selectItemCategoryByParentId(Integer parentId){
         return itemCatService.selectItemCategoryByParentId(parentId);
+    }
+
+    //查询左侧商品分类类目信息
+    @RequestMapping("/selectItemCategoryAll")
+    public CatResult selectItemCategoryAll(){
+        return itemCatService.selectItemCategoryAll();
     }
 }
