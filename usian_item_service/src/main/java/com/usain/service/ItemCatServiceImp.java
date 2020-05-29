@@ -1,11 +1,13 @@
 package com.usain.service;
 
-import com.usian.mapper.TbItemCatMapper;
-import com.usian.pojo.TbItemCat;
-import com.usian.pojo.TbItemCatExample;
-import com.usian.utils.CatNode;
-import com.usian.utils.CatResult;
+import com.usain.mapper.TbItemCatMapper;
+import com.usain.pojo.TbItemCat;
+import com.usain.pojo.TbItemCatExample;
+import com.usain.redis.RedisClient;
+import com.usain.utils.CatNode;
+import com.usain.utils.CatResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,14 @@ public class ItemCatServiceImp implements ItemCatService{
     //注入mapper
     @Autowired
     private TbItemCatMapper tbItemCatMapper;
+
+    //注入redis缓存库
+    @Autowired
+    private RedisClient redisClient;
+
+    //获取到首页商品分类的key值
+    @Value("${PROTAL_CATRESULT_KEY}")
+    private String PROTAL_CATRESULT_KEY;
 
     //查询商品类目
     @Override
@@ -33,9 +43,18 @@ public class ItemCatServiceImp implements ItemCatService{
     //查询商品左侧分类类目信息，需要递归查询，递归单独方法调用
     @Override
     public CatResult selectItemCategoryAll() {
+        //1、先从redis缓存中查询
+        CatResult catResultRedis = (CatResult) redisClient.get(PROTAL_CATRESULT_KEY);
+        if(catResultRedis!=null){  //如果不为空直接返回
+            return catResultRedis;
+        }
+        //2、redis没查到，从数据库中查询
         List<?> catlist = getCatlist(0L);//默认查询父节点为0的
         CatResult catResult = new CatResult();   //创建对象，将数据放到对象中的data集合变量中
         catResult.setData(catlist);
+
+        //3、存数据仓库中查到添加到redis缓存中
+        redisClient.set(PROTAL_CATRESULT_KEY,catResult);
         return catResult;
     }
     //递归方法查询信息

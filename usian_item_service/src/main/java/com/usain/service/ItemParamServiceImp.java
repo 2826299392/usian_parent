@@ -2,10 +2,10 @@ package com.usain.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.usian.mapper.TbItemParamMapper;
-import com.usian.pojo.TbItemParam;
-import com.usian.pojo.TbItemParamExample;
-import com.usian.utils.PageResult;
+import com.usain.mapper.TbItemParamMapper;
+import com.usain.pojo.TbItemParam;
+import com.usain.pojo.TbItemParamExample;
+import com.usain.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

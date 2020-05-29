@@ -1,7 +1,7 @@
 package com.usain.service;
 
-import com.usian.pojo.TbItemParam;
-import com.usian.utils.PageResult;
+import com.usain.pojo.TbItemParam;
+import com.usain.utils.PageResult;
 
 public interface ItemParamService {
     //查询商品规格信息

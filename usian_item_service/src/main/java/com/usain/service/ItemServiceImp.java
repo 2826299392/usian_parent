@@ -2,11 +2,11 @@ package com.usain.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.usian.mapper.*;
-import com.usian.pojo.*;
+import com.usain.mapper.*;
+import com.usain.pojo.*;
 
-import com.usian.utils.IDUtils;
-import com.usian.utils.PageResult;
+import com.usain.utils.IDUtils;
+import com.usain.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

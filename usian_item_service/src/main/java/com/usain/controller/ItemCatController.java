@@ -1,8 +1,8 @@
 package com.usain.controller;
 
 import com.usain.service.ItemCatService;
-import com.usian.pojo.TbItemCat;
-import com.usian.utils.CatResult;
+import com.usain.pojo.TbItemCat;
+import com.usain.utils.CatResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
