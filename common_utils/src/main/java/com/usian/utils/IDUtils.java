@@ -1,7 +1,6 @@
 package com.usian.utils;
 
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * 各种id生成策略

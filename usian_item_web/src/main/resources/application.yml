@@ -2,7 +2,7 @@ server:
   port: 8091  #端口号
 spring:
   application:
-    name: usain-item-web  #向注册中心注册的名称
+    name: usian-item-web  #向注册中心注册的名称
 eureka:
   client:
     service-url:

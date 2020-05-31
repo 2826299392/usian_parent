@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.usian.mapper.TbContentMapper;
 import com.usian.pojo.TbContent;
 import com.usian.pojo.TbContentExample;
+import com.usian.redis.RedisClient;
 import com.usian.utils.AdNode;
 import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class ContentServiceImp implements ContentService {
 
     @Value("${AD_WIDTHB}")
     private Integer AD_WIDTHB;
+
+    @Value("${PORTAL_AD_KEY}")
+    private String PORTAL_AD_KEY;
+
+    @Autowired   //注入redis缓存
+    private RedisClient redisClient;
 
     //注入mapper
     @Autowired
@@ -63,17 +70,27 @@ public class ContentServiceImp implements ContentService {
         TbContentExample tbContentExample = new TbContentExample();
         tbContent.setUpdated(new Date());
         tbContent.setCreated(new Date());
+        //缓存同步，在添加的时候删除redsi旧的缓存数据，使在查询的时候，先从数据库中查询新的数据，在保存到redis的缓存中
+        redisClient.hdel(PORTAL_AD_KEY,AD_CATEGORY_ID.toString());
         return tbContentMapper.insertSelective(tbContent);
     }
 
     @Override
     public Integer deleteContentByIds(Long ids) {
+        //缓存同步，在删除的时候删除redsi旧的缓存数据，使在查询的时候，先从数据库中查询新的数据，在保存到redis的缓存中
+        redisClient.hdel(PORTAL_AD_KEY,AD_CATEGORY_ID.toString());
         return tbContentMapper.deleteByPrimaryKey(ids);
     }
 
     //大广告查询 配置文件中定义了默认id查询
     @Override
     public List<AdNode> selectFrontendContentByAD() {
+        //1、redis缓存中查询      AD_CATEGORY_ID.toString()默认的id查询它下面所有的数据
+        List<AdNode> adNodeList = (List<AdNode>) redisClient.hget(PORTAL_AD_KEY, AD_CATEGORY_ID.toString());
+        if(adNodeList!=null){
+            return adNodeList;   //redis中有的话直接返回
+        }
+
         TbContentExample tbContentExample = new TbContentExample();
         TbContentExample.Criteria criteria = tbContentExample.createCriteria();
         criteria.andCategoryIdEqualTo(AD_CATEGORY_ID);
@@ -90,6 +107,8 @@ public class ContentServiceImp implements ContentService {
             adNode.setWidthB(AD_WIDTHB);
             adNodeArrayList.add(adNode);
         }
+        //从数据库中查完添加到redis缓存中
+        redisClient.hset(PORTAL_AD_KEY,AD_CATEGORY_ID.toString(),adNodeArrayList);
         return adNodeArrayList;
     }
 }

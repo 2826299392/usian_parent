@@ -1,7 +1,7 @@
-package com.usain.service;
+package com.usian.service;
 
-import com.usain.pojo.TbItemCat;
-import com.usain.utils.CatResult;
+import com.usian.pojo.TbItemCat;
+import com.usian.utils.CatResult;
 
 import java.util.List;
 

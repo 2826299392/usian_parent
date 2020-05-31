@@ -1,7 +1,6 @@
 package com.usian.controller;
 
 import com.github.tobato.fastdfs.domain.StorePath;
-import com.github.tobato.fastdfs.domain.ThumbImageConfig;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.usian.utils.Result;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
-package com.usain.service;
+package com.usian.service;
 
-import com.usain.pojo.TbItem;
-import com.usain.utils.PageResult;
+import com.usian.pojo.TbItem;
+import com.usian.utils.PageResult;
 
 import java.util.Map;
 

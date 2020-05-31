@@ -1,6 +1,5 @@
 package com.usian.utils;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class PageResult{

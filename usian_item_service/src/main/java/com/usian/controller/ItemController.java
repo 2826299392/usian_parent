@@ -1,8 +1,8 @@
-package com.usain.controller;
+package com.usian.controller;
 
-import com.usain.service.ItemService;
-import com.usain.pojo.TbItem;
-import com.usain.utils.PageResult;
+import com.usian.service.ItemService;
+import com.usian.pojo.TbItem;
+import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,8 +1,8 @@
-package com.usain.controller;
+package com.usian.controller;
 
-import com.usain.service.ItemParamService;
-import com.usain.pojo.TbItemParam;
-import com.usain.utils.PageResult;
+import com.usian.service.ItemParamService;
+import com.usian.pojo.TbItemParam;
+import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

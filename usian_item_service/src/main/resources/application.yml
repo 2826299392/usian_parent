@@ -6,7 +6,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka/  #注册中心地址
 spring:
   application:
-    name: usain-item-service  #向注册中心注册的名称
+    name: usian-item-service  #向注册中心注册的名称
     #连接数据库
   datasource:
     driver-class-name: com.mysql.jdbc.Driver

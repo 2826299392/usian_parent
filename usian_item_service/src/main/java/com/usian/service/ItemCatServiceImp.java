@@ -1,11 +1,11 @@
-package com.usain.service;
+package com.usian.service;
 
-import com.usain.mapper.TbItemCatMapper;
-import com.usain.pojo.TbItemCat;
-import com.usain.pojo.TbItemCatExample;
-import com.usain.redis.RedisClient;
-import com.usain.utils.CatNode;
-import com.usain.utils.CatResult;
+import com.usian.mapper.TbItemCatMapper;
+import com.usian.pojo.TbItemCat;
+import com.usian.pojo.TbItemCatExample;
+import com.usian.redis.RedisClient;
+import com.usian.utils.CatNode;
+import com.usian.utils.CatResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
