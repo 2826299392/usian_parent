@@ -7,6 +7,7 @@ import com.usian.pojo.*;
 
 import com.usian.utils.IDUtils;
 import com.usian.utils.PageResult;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,10 @@ public class ItemServiceImp implements ItemService{
     //注入规格表的mapper
     @Autowired
     private TbItemCatMapper tbItemCatMapper;
+
+    //注入mq的工具发送信息到交换器
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
    //根据ID查询商品信息
     @Override
@@ -90,6 +95,8 @@ public class ItemServiceImp implements ItemService{
         tbItemParamItem.setParamData(itemParams);
         Integer i3 = tbItemParamItemMapper.insertSelective(tbItemParamItem);
 
+        //将添加时商品的id发送到交换器 1、交换器  2、根据key来指定获取，3、信息内容
+        amqpTemplate.convertAndSend("item_exchage","item.add",itemId);
         return i1+i2+i3;
     }
 

@@ -1,7 +1,7 @@
 package com.usian.pojo;
 
 public class SearchItem {
-    private String item_id;
+    private String id;
     private String item_title;
     private String item_sell_point;
     private String item_price;
@@ -11,9 +11,8 @@ public class SearchItem {
 
     public SearchItem() {
     }
-
-    public SearchItem(String item_id, String item_title, String item_sell_point, String item_price, String item_image, String item_category_name, String item_desc) {
-        this.item_id = item_id;
+    public SearchItem(String id, String item_title, String item_sell_point, String item_price, String item_image, String item_category_name, String item_desc) {
+        this.id = id;
         this.item_title = item_title;
         this.item_sell_point = item_sell_point;
         this.item_price = item_price;
@@ -22,12 +21,12 @@ public class SearchItem {
         this.item_desc = item_desc;
     }
 
-    public String getItem_id() {
-        return item_id;
+    public String getId() {
+        return id;
     }
 
-    public void setItem_id(String item_id) {
-        this.item_id = item_id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getItem_title() {
@@ -76,5 +75,18 @@ public class SearchItem {
 
     public void setItem_desc(String item_desc) {
         this.item_desc = item_desc;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchItem{" +
+                "id='" + id + '\'' +
+                ", item_title='" + item_title + '\'' +
+                ", item_sell_point='" + item_sell_point + '\'' +
+                ", item_price='" + item_price + '\'' +
+                ", item_image='" + item_image + '\'' +
+                ", item_category_name='" + item_category_name + '\'' +
+                ", item_desc='" + item_desc + '\'' +
+                '}';
     }
 }
