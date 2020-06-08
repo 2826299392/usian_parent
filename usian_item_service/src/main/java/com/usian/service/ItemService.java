@@ -1,6 +1,7 @@
 package com.usian.service;
 
 import com.usian.pojo.TbItem;
+import com.usian.pojo.TbItemDesc;
 import com.usian.utils.PageResult;
 
 import java.util.Map;
@@ -23,4 +24,7 @@ public interface ItemService {
 
     //带参数修改商品
     Integer updateTbItem(TbItem item, String desc, String itemParams);
+
+    //查询商品详情信息
+    TbItemDesc selectItemDescByItemId(Long itemId);
 }

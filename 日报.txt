@@ -121,3 +121,16 @@
 2020-06-05：
          1、搜索商品，以关键字搜索商品信息
          2、添加商品的时候将数据同步到索引库中
+2020-06-08:
+         1、创建usian_detail_web工程
+         2、//搜索到商品，点击商品根据ID查看商品信息
+               @RequestMapping("/selectItemInfo")
+               public Result selectItemInfo(@RequestParam Long itemId)；
+         3、//根据Id查询商品详情数据信息
+               @RequestMapping("/selectItemDescByItemId")
+               public Result selectItemDescByItemId(@RequestParam Long itemId)
+         4、 //商品详情信息的规格参数信息
+               @RequestMapping("selectTbItemParamItemByItemId")
+               public Result selectTbItemParamItemByItemId(@RequestParam Long itemId)
+         5、解决缓存穿透的问题
+         6、解决缓存穿击的问题

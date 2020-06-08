@@ -2,11 +2,16 @@ package com.usian.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.usian.mapper.TbItemParamItemMapper;
 import com.usian.mapper.TbItemParamMapper;
 import com.usian.pojo.TbItemParam;
 import com.usian.pojo.TbItemParamExample;
+import com.usian.pojo.TbItemParamItem;
+import com.usian.pojo.TbItemParamItemExample;
+import com.usian.redis.RedisClient;
 import com.usian.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +22,33 @@ import java.util.List;
 @Transactional
 public class ItemParamServiceImp implements ItemParamService{
 
+    @Value("${ITEM_INFO}")
+    private String ITEM_INFO;   //表示商品的存redis的时候key名
+
+    @Value("${BASE}")
+    private String BASE;       //表示商品详情信息存redis的时候key名
+
+    @Value("${DESC}")
+    private String DESC;        //描述信息存redis的时候key名
+
+    @Value("${PARAM}")
+    private String PARAM;      //表示规格参数的存redis的时候key名
+
+    @Value("${ITEM_INFO_EXPIRE}")
+    private Long ITEM_INFO_EXPIRE;   //存redis的时候设定的失效时间
+
+    @Value("${SETNX_PARAM_LOCK_KEY}")
+    private Long SETNX_PARAM_LOCK_KEY;   //存redis的时候设定的失效时间
+
+    @Autowired  //注入redis工具类
+    private RedisClient redisClient;
+
     //注入mapper
     @Autowired
     private TbItemParamMapper tbItemParamMapper;
+
+    @Autowired
+    private TbItemParamItemMapper tbItemParamItemMapper;
 
 
     @Override
@@ -76,5 +105,39 @@ public class ItemParamServiceImp implements ItemParamService{
     public Integer deleteItemParamById(Long id) {
         int i = tbItemParamMapper.deleteByPrimaryKey(id);  //删除
         return i;
+    }
+
+    //商品详情页的规格参数查询
+    @Override
+    public TbItemParamItem selectTbItemParamItemByItemId(Long itemId){
+        //1、存缓存中查询信息     根据key查询value
+        TbItemParamItem tbItemParamItem = (TbItemParamItem) redisClient.get(ITEM_INFO+":"+itemId+":"+PARAM);
+        if(tbItemParamItem!=null){    //判断数据是否查到
+            return tbItemParamItem;
+        }
+
+        if(redisClient.setnx(SETNX_PARAM_LOCK_KEY+":"+itemId,itemId,30L)){
+            //2、给数据设置有效时间，将查询到的商品数据添加到redis缓存中
+            TbItemParamItemExample tbItemParamItemExample = new TbItemParamItemExample();      //条件工具类
+            TbItemParamItemExample.Criteria criteria = tbItemParamItemExample.createCriteria();
+            criteria.andItemIdEqualTo(itemId);                                           //封装条件
+            List<TbItemParamItem> tbItemParamItems = tbItemParamItemMapper.selectByExampleWithBLOBs(tbItemParamItemExample);
+            if(tbItemParamItems!=null && tbItemParamItems.size()>0){      //判断数据
+                redisClient.set(ITEM_INFO+":"+itemId+":"+PARAM,tbItemParamItems.get(0));    //存到redis中
+                redisClient.expire(ITEM_INFO+":"+itemId+":"+PARAM,ITEM_INFO_EXPIRE);       //保证数据为最新，设置失效时间
+            }else {
+                redisClient.set(ITEM_INFO+":"+itemId+":"+PARAM,null);    //解决缓存穿透，空值也进行缓存
+                redisClient.expire(ITEM_INFO+":"+itemId+":"+PARAM,ITEM_INFO_EXPIRE);       //保证数据为最新，设置失效时间
+            }
+            redisClient.del(SETNX_PARAM_LOCK_KEY+":"+itemId);
+            return null;
+        }else {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return selectTbItemParamItemByItemId(itemId);
+        }
     }
 }

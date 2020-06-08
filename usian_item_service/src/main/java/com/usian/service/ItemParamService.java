@@ -1,6 +1,7 @@
 package com.usian.service;
 
 import com.usian.pojo.TbItemParam;
+import com.usian.pojo.TbItemParamItem;
 import com.usian.utils.PageResult;
 
 public interface ItemParamService {
@@ -15,4 +16,7 @@ public interface ItemParamService {
 
     //删除商品规格信息
     Integer deleteItemParamById(Long id);
+
+    //商品详情页的规格参数信息查询
+    TbItemParamItem selectTbItemParamItemByItemId(Long itemId);
 }
