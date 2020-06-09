@@ -134,3 +134,19 @@
                public Result selectTbItemParamItemByItemId(@RequestParam Long itemId)
          5、解决缓存穿透的问题
          6、解决缓存穿击的问题
+2020-06-09：
+         1、 //注册校验用户是否已经存在
+               @RequestMapping("/checkUserInfo/{checkValue}/{checkFlag}")
+               public Result checkUserInfo(@PathVariable String checkValue,@PathVariable Integer checkFlag)
+         2、 //注册用户信息
+               @RequestMapping("/userRegister")
+               public Result userRegister(TbUser tbUser)
+         3、//用户登录
+               @RequestMapping("/userLogin")
+               public Result userLogin(@RequestParam String username,@RequestParam String password)
+         4、//通过登录的时候存到cookie域的token中的数据查询用户信息，在页面展示欢迎XX登录
+               @RequestMapping("/getUserByToken/{token}")
+               public Result getUserByToken(@PathVariable String token)
+         5、 //退出登录清空用户信息
+               @RequestMapping("/logOut")
+               public Result logOut(@RequestParam String token)

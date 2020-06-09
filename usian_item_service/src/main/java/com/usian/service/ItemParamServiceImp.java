@@ -38,7 +38,7 @@ public class ItemParamServiceImp implements ItemParamService{
     private Long ITEM_INFO_EXPIRE;   //存redis的时候设定的失效时间
 
     @Value("${SETNX_PARAM_LOCK_KEY}")
-    private Long SETNX_PARAM_LOCK_KEY;   //存redis的时候设定的失效时间
+    private String SETNX_PARAM_LOCK_KEY;   //存redis的时候设定的失效时间
 
     @Autowired  //注入redis工具类
     private RedisClient redisClient;
