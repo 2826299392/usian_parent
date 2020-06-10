@@ -89,7 +89,7 @@ public class SSOServiceImp implements SSOService{
         Map<String, Object> map = new HashMap<>();   //分装到map中响应给前台存到cookie域中的token
         map.put("token",token);
         map.put("username",tbUser.getUsername());
-        map.put("password",tbUser.getPassword());
+        map.put("userid",tbUser.getId());
         return map;
     }
 
