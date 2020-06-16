@@ -125,7 +125,7 @@ public class CartController {
         try {
              List<TbItem> list = new ArrayList<>();
              if(StringUtils.isBlank(userId)){
-                 /******为空未登录情况下添加购物车********/
+                 /******为空未登录情况下查看购物车********/
                  //1、获取购物车map
                  Map<String, TbItem> cart = getCookieCart(request);
                  Set<String> keys = cart.keySet();  //获取map里面所有key的集合数组
@@ -133,7 +133,13 @@ public class CartController {
                      list.add(cart.get(key));  //根据key获取value存到list响应给前台
                  }
              }else {
-                 // 在用户已登录的状态
+                 /******登录情况下添加购物车********/
+                 //1、获取购物车map
+                 Map<String, TbItem> cart = getRedisCart(userId);
+                 Set<String> keys = cart.keySet();
+                 for(String key : keys){
+                     list.add(cart.get(key));
+                 }
              }
             return Result.ok(list);
         }catch (Exception e){
@@ -157,6 +163,17 @@ public class CartController {
                 tbItem.setNum(num);
                 cart.put(itemId.toString(),tbItem);
                 addCartToCookie(request,response,cart);  //调用将购物车添加到cookie域中的方法
+            }else {
+                //1、获取购物车
+                Map<String, TbItem> cart = getRedisCart(userId);
+
+                //2、根据商品id获取购物车里面的商品,修改商品数量,在添加到map中覆盖，
+                TbItem tbItem = cart.get(itemId.toString());
+                if (tbItem!=null){
+                    tbItem.setNum(num);
+                }
+                cartServiceFeign.addCartToRedis(userId,cart);
+                return Result.ok();
             }
             return Result.ok();
         }catch (Exception e){
@@ -175,11 +192,14 @@ public class CartController {
                   Map<String, TbItem> cart = getCookieCart(request);  //获取购物车
                   cart.remove(itemId.toString());      //根据itemId删除购物车中的商品信息
                   addCartToCookie(request,response,cart);
-
+                  return Result.ok();
               }else {
                    //已登录
+                  Map<String, TbItem> cart = getRedisCart(userId);
+                  cart.remove(itemId.toString());
+                  cartServiceFeign.addCartToRedis(userId,cart);
+                  return Result.ok();
               }
-            return Result.ok();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("删除失败");
