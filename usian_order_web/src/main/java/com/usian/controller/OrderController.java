@@ -1,7 +1,11 @@
 package com.usian.controller;
 
 import com.usian.CartServiceFeign;
+import com.usian.feign.OrderFeign;
+import com.usian.pojo.OrderInfo;
 import com.usian.pojo.TbItem;
+import com.usian.pojo.TbOrder;
+import com.usian.pojo.TbOrderShipping;
 import com.usian.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +20,11 @@ import java.util.Map;
 @RequestMapping("/frontend/order")
 public class OrderController {
 
-    @Autowired
+    @Autowired   //注入购物车接口
     private CartServiceFeign cartServiceFeign;
+
+    @Autowired  //注入订单接口
+    private OrderFeign orderFeign;
 
     //查看商品订单页面信息
     @RequestMapping("/goSettlement")
@@ -35,5 +42,20 @@ public class OrderController {
             return Result.ok(list);
         }
         return Result.error("结算错误");
+    }
+
+    //提交订单商品的信息，将提交的订单商品信息保存到数据库
+    @RequestMapping("/insertOrder")
+    public Result insertOrder(String orderItem, TbOrderShipping tbOrderShipping, TbOrder tbOrder){
+         //每次请求只有一个响应，创建一个大的pojo装在参数
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderItem(orderItem);
+        orderInfo.setTbOrder(tbOrder);
+        orderInfo.setTbOrderShipping(tbOrderShipping);
+        String orderId = orderFeign.insertOrder(orderInfo);   //添加成功后返回一个订单号，提供给用户
+        if(orderId!=null){
+            return Result.ok(orderId);
+        }
+        return Result.error("订单错误");
     }
 }

@@ -67,6 +67,9 @@ public class ItemServiceImp implements ItemService{
     @Autowired  //注入redis工具类
     private RedisClient redisClient;
 
+    @Autowired
+    private TbOrderItemMapper tbOrderItemMapper;
+
    //根据ID查询商品信息
     @Override
     public TbItem selectItemInfo(Long itemId){
@@ -253,5 +256,24 @@ public class ItemServiceImp implements ItemService{
                }
                return selectItemDescByItemId(itemId);
            }
+    }
+
+    //根据商品订单号修改商品库存数量
+    @Override
+    public Integer updateTbItemByOrderId(String orderId) {
+        //1、根据订单号获取TborderItem订单中的商品信息
+        TbOrderItemExample tbOrderItemExample = new TbOrderItemExample();
+        TbOrderItemExample.Criteria criteria = tbOrderItemExample.createCriteria();
+        criteria.andOrderIdEqualTo(orderId);
+        List<TbOrderItem> tbOrderItems = tbOrderItemMapper.selectByExample(tbOrderItemExample);
+
+        //2、遍历订单的商品信息
+        int result=0;
+        for (TbOrderItem tbOrderItem : tbOrderItems) {
+            TbItem tbItem = tbItemMapper.selectByPrimaryKey(Long.valueOf(tbOrderItem.getItemId()));
+            tbItem.setNum(tbItem.getNum()-tbOrderItem.getNum());
+            result += tbItemMapper.updateByPrimaryKeySelective(tbItem);
+        }
+        return result;
     }
 }

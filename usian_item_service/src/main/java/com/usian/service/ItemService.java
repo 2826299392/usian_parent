@@ -27,4 +27,7 @@ public interface ItemService {
 
     //查询商品详情信息
     TbItemDesc selectItemDescByItemId(Long itemId);
+
+    //根据商品订单号修改商品库存数量
+    Integer updateTbItemByOrderId(String orderId);
 }

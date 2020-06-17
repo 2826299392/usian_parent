@@ -13,3 +13,23 @@ spring:
     username: root
     password: 1234
     type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    cluster:
+      nodes:
+        - 192.168.159.133:7001
+        - 192.168.159.133:7002
+        - 192.168.159.133:7003
+        - 192.168.159.133:7004
+        - 192.168.159.133:7005
+        - 192.168.159.133:7006
+  rabbitmq:
+    host: 192.168.159.136
+    port: 5672
+    username: admin
+    password: 1111
+    virtual-host: /
+
+#订单
+ORDER_ID_KEY: ORDER_ID_KEY
+ORDER_ID_BEGIN: 100544
+ORDER_ITEM_ID_KEY: ORDER_ITEM_ID_KEY

@@ -178,4 +178,15 @@
          1、商品结算的时候进行拦截
          2、查看订单页面商品详情
             @RequestMapping("/goSettlement")
-               public Result goSettlement(String userId,String[] ids){
+               public Result goSettlement(String userId,String[] ids)
+2020-06-07:
+         1、提交订单
+            //提交订单商品的信息，将提交的订单商品信息保存到数据库
+                @RequestMapping("/insertOrder")
+                public Result insertOrder(String orderItem, TbOrderShipping tbOrderShipping, TbOrder tbOrder)
+         2、扣减库存
+              //通过MQ发送消息在提交订单购买成功后，扣除item中商品的库存数量
+                      amqpTemplate.convertAndSend("order_exchange","order.deleteNum",orderId);
+              //根据商品订单号修改商品库存数量
+                  @Override
+                  public Integer updateTbItemByOrderId(String orderId)
