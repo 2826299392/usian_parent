@@ -27,4 +27,7 @@ public interface TbOrderMapper {
     int updateByPrimaryKeySelective(TbOrder record);
 
     int updateByPrimaryKey(TbOrder record);
+
+    //1、查询我们的商品订单中所有超时的订单商品
+    List<TbOrder> selectOverTimeTbOrder();
 }

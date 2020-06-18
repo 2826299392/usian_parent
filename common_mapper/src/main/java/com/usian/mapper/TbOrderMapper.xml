@@ -398,4 +398,9 @@
       buyer_rate = #{buyerRate,jdbcType=INTEGER}
     where order_id = #{orderId,jdbcType=VARCHAR}
   </update>
+
+  <!--1、查询我们的商品订单中所有超时的订单商品-->
+  <select id="selectOverTimeTbOrder" resultMap="BaseResultMap">
+    SELECT * FROM tb_order where create_time &lt;= DATE_SUB(NOW(),INTERVAL 2 DAY) and status=1 and payment_type=1
+  </select>
 </mapper>

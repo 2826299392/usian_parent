@@ -190,3 +190,11 @@
               //根据商品订单号修改商品库存数量
                   @Override
                   public Integer updateTbItemByOrderId(String orderId)
+2020-06-08:
+         1、  @Bean
+               public JobDetailFactoryBean getJobDetailFactoryBean(){
+               @Bean
+                   public CronTriggerFactoryBean getCronTriggerFactoryBean(JobDetailFactoryBean jobDetailFactoryBean){
+              @Bean
+                  public SchedulerFactoryBean getSchedulerFactoryBean(CronTriggerFactoryBean cronTriggerFactoryBean,MyAdaptabl
+               if(redisClient.setnx("SETNX_ORDER_LOCK_KEY",ip,30)){
