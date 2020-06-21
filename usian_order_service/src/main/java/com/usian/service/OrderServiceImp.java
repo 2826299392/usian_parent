@@ -1,9 +1,7 @@
 package com.usian.service;
 
-import com.usian.mapper.TbItemMapper;
-import com.usian.mapper.TbOrderItemMapper;
-import com.usian.mapper.TbOrderMapper;
-import com.usian.mapper.TbOrderShippingMapper;
+import com.usian.mapper.*;
+import com.usian.mq.MQSender;
 import com.usian.pojo.*;
 import com.usian.redis.RedisClient;
 import com.usian.utils.JsonUtils;
@@ -48,6 +46,12 @@ public class OrderServiceImp implements OrderService{
     @Autowired
     private TbItemMapper tbItemMapper;
 
+    @Autowired   //注入记录本地消息表的mapper
+    private LocalMessageMapper localMessageMapper;
+
+    @Autowired   //注入发消息的类
+    private MQSender mqSender;
+
     @Override
     public String insertOrder(OrderInfo orderInfo) {
         //1、解析orderInfo
@@ -86,8 +90,16 @@ public class OrderServiceImp implements OrderService{
         tbOrderShipping.setUpdated(new Date());
         tbOrderShippingMapper.insertSelective(tbOrderShipping);
 
-        //通过MQ发送消息在提交订单购买成功后，扣除item中商品的库存数量
-        amqpTemplate.convertAndSend("order_exchange","order.deleteNum",orderId);
+
+        //记录本地消息表    将订单订单号，和订单的状态记录到本地
+        LocalMessage localMessage = new LocalMessage();  //创建本地记录消息的对象
+        localMessage.setOrderNo(orderId.toString());     //要记录的消息
+        localMessage.setTxNo(UUID.randomUUID().toString());   //设置一下这个消息的消息Id
+        localMessage.setState(0);   //设置一下这个消息的状态  0 就是默认是这个消息发送失败没成功，在扫描的时候重新发送这条消息
+        localMessageMapper.insertSelective(localMessage);   //将消息记录到数据库
+
+        //发送消息，修改本地消息表的状态       消息要发送orderId   还要发送消息自身Id，所以发送对象
+        mqSender.sendMsg(localMessage);
 
         return orderId.toString();
     }

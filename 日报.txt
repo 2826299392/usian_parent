@@ -179,7 +179,7 @@
          2、查看订单页面商品详情
             @RequestMapping("/goSettlement")
                public Result goSettlement(String userId,String[] ids)
-2020-06-07:
+2020-06-17:
          1、提交订单
             //提交订单商品的信息，将提交的订单商品信息保存到数据库
                 @RequestMapping("/insertOrder")
@@ -190,7 +190,7 @@
               //根据商品订单号修改商品库存数量
                   @Override
                   public Integer updateTbItemByOrderId(String orderId)
-2020-06-08:
+2020-06-18:
          1、  @Bean
                public JobDetailFactoryBean getJobDetailFactoryBean(){
                @Bean
@@ -198,3 +198,33 @@
               @Bean
                   public SchedulerFactoryBean getSchedulerFactoryBean(CronTriggerFactoryBean cronTriggerFactoryBean,MyAdaptabl
                if(redisClient.setnx("SETNX_ORDER_LOCK_KEY",ip,30)){
+2020-06-19：
+         1、一、代理模式
+            1、作用：控制访问某个对象的方法，调用方法前可以做前置处理，调用方法后可以做后置处理（AOP的微观实现）
+            2、角色：
+           		抽象角色（接口）：定义公共对外方法
+           		真实角色（周杰伦）：业务逻辑
+           		代理角色（代理人）：调用真实角色完成业务逻辑，并可附加自己的操作
+
+           3、静态代理缺陷：
+           	     大量代码重复
+           	     只能代理一种类型的对象
+           4、动态代理
+           	a、jdk自带的动态代理
+           	     java.lang.reflect.InvocationHandler：通过invoke调用真实角色
+           	     java.lang.reflect.Proxy：动态生成代理类的对象
+
+           		好处：
+           		     大量代码重复
+           		     能代理任意类型的对象
+
+           	b、Cglib的动态代理
+           		和jdk代理的区别：没有接口
+           		原理：生成代理类的子类，在子类中调用父类并可附加自己的操作
+          5、 //记录本地消息表    将订单订单号，和订单的状态记录到本地
+          6、 public void sendMsg(LocalMessage localMessage) {
+                    RabbitTemplate rabbitTemplate = (RabbitTemplate) this.amqpTemplate;//将amqpTemplate接口转换为rabbitListener子类调用方法
+
+          7、 //作用：下游服务：  消息确认成功返回后调用
+                @Override
+                public void confirm(CorrelationData correlationData, boolean ack, String s) {
