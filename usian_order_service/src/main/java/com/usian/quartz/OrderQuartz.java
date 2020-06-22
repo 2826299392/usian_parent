@@ -1,7 +1,10 @@
 package com.usian.quartz;
 
+import com.usian.mq.MQSender;
+import com.usian.pojo.LocalMessage;
 import com.usian.pojo.TbOrder;
 import com.usian.redis.RedisClient;
+import com.usian.service.LocalMessageService;
 import com.usian.service.OrderService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -21,6 +24,12 @@ public class OrderQuartz implements Job {
     @Autowired
     private RedisClient redisClient;
 
+    @Autowired
+    private MQSender mqSender;
+
+
+    @Autowired
+    private LocalMessageService localMessageService;
     //要做的任务：关闭超时订单任务
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -44,6 +53,12 @@ public class OrderQuartz implements Job {
 
                 //3、完成订单商品超时的数量加入到商品库存中加入回去
                 orderService.updateTbItemByOrderId(tbOrder.getOrderId());
+            }
+
+            System.out.println("执行扫描本地消息表的任务...." + new Date());
+            List<LocalMessage> localMessages = localMessageService.selectLocalMessageByStatus(0);  //查询状态为0的消息发送失败的消息
+            for (LocalMessage localMessage : localMessages) {      //遍历发送失败的消息
+                mqSender.sendMsg(localMessage);    //将消息记录表中失败的消息，在次发送
             }
             redisClient.del("SETNX_ORDER_LOCK_KEY");
         }else {
