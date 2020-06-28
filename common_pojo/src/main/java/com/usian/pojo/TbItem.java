@@ -1,16 +1,24 @@
 package com.usian.pojo;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+@ApiModel//生成文档告诉这个pojo接收参数
 public class TbItem {
+    @ApiModelProperty(hidden = true) //id是在数据库自动生成，隐藏一下
     private Long id;
 
+    @ApiModelProperty(name = "title",dataType = "String",value = "商品描述信息")//用对象接收参数时，描述对象的一个字段
     private String title;
 
+    @ApiModelProperty(name = "sellPoint",dataType = "String",value = "商品规格参数信息")//用对象接收参数时，描述对象的一个字段
     private String sellPoint;
 
+    @ApiModelProperty(name = "price",dataType = "Long",value = "商品价格信息")//用对象接收参数时，描述对象的一个字段
     private Long price;
 
+    @ApiModelProperty(name = "num",dataType = "Integer",value = "商品库存数量信息")//用对象接收参数时，描述对象的一个字段
     private Integer num;
 
     private String barcode;

@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="common_config" />
         <module name="common_eureka" />
         <module name="common_mapper" />
         <module name="common_pojo" />
         <module name="common_redis" />
         <module name="common_utils" />
+        <module name="common_zuul" />
         <module name="usian_cart_feign" />
         <module name="usian_cart_service" />
         <module name="usian_cart_web" />
@@ -37,11 +39,13 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="common_config" options="-parameters" />
       <module name="common_eureka" options="-parameters" />
       <module name="common_mapper" options="-parameters" />
       <module name="common_pojo" options="-parameters" />
       <module name="common_redis" options="-parameters" />
       <module name="common_utils" options="-parameters" />
+      <module name="common_zuul" options="-parameters" />
       <module name="usian_cart_feign" options="-parameters" />
       <module name="usian_cart_service" options="-parameters" />
       <module name="usian_cart_web" options="-parameters" />
